@@ -1,9 +1,11 @@
 import uvicorn
 from fastapi import FastAPI
 from prisma import Prisma
-import asyncio
+from src.routes import cases
 
 app = FastAPI()
+
+app.include_router(cases.router, prefix="/")
 
 @app.get("/")
 async def list_posts():
@@ -21,7 +23,7 @@ async def add_post():
     db=Prisma()
     await db.connect()
 
-    new_post = await db.post.create(
+    new_post = await db.case.create(
         data ={
             "title" : "Tytuł",
             "content" : "Kontent",
