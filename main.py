@@ -1,8 +1,14 @@
 import uvicorn
-from fastapi import FastAPI
-
+from fastapi import FastAPI, Depends
+from src.database.models import User
+from src.database.db import get_db
+from src.repository import users
+from sqlalchemy.orm import Session
 
 app = FastAPI()
+
+
+users.add_user(username="kamik", email="fajnymail", password="haslo", db=Depends(get_db))
 
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 # app.include_router(views.router)
