@@ -15,6 +15,21 @@ async def list_posts():
     await db.disconnect()
 
     return posts
+
+@app.post("/post-something/")
+async def add_post():
+    db=Prisma()
+    await db.connect()
+
+    new_post = await db.post.create(
+        data ={
+            "title" : "Tytuł",
+            "content" : "Kontent",
+            "published" : True
+        }
+    )
+
+    await db.disconnect()
  
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)
