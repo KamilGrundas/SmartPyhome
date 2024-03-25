@@ -1,2 +1,11 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
 .venv
-db.sqlite
+database.db
+__pycache__/

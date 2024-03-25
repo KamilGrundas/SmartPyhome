@@ -1,20 +1,20 @@
 import uvicorn
-from fastapi import FastAPI, Depends
-from src.database.models import User
-from src.database.db import get_db
-from src.repository import users
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
+from prisma import Prisma
+import asyncio
 
 app = FastAPI()
 
+@app.get("/")
+async def list_posts():
+    db = Prisma()
+    await db.connect()
 
-users.add_user(username="kamik", email="fajnymail", password="haslo", db=Depends(get_db))
+    posts = await db.post.find_many()
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
-# app.include_router(views.router)
-# app.include_router(pictures.router, prefix="/wizards")
-# app.include_router(tags.router, prefix="/wizards")
-# app.include_router(auth_new.router, prefix="/api")
+    await db.disconnect()
+
+    return posts
  
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)
