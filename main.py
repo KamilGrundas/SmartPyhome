@@ -5,7 +5,7 @@ from src.routes import cases
 
 app = FastAPI()
 
-app.include_router(cases.router, prefix="/")
+app.include_router(cases.router, prefix="")
 
 @app.get("/")
 async def list_posts():
