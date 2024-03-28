@@ -2,7 +2,7 @@ from time import sleep
 from src.repository.cases import add_case_record
 from src.schemas import Case_Price_Model
 import asyncio
-import requests
+import aiohttp
 
 def urlizer(name):
     result = name.replace(" ", "%20").replace("&", "%26")
@@ -73,18 +73,20 @@ cases = ("CS20 Case",
 
 url_core = "https://steamcommunity.com/market/priceoverview/?appid=730&currency=6&market_hash_name="
 
+async def fetch_case_data(session, url):
+    async with session.get(url) as response:
+        return await response.json()
+
 async def main():
+    async with aiohttp.ClientSession() as session:
+        for case in cases:
+            url = url_core + urlizer(case)
+            response = await fetch_case_data(session, url)
+            await asyncio.sleep(3)  # Oczekiwanie 3 sekundy między zapytaniami
 
-    for case in cases:
-        url = url_core + urlizer(case)
-        response = requests.get(url) #change to async
-
-        await asyncio.sleep(3)
-
-
-        lowest_price = response.json()["lowest_price"]
-        case = Case_Price_Model(name = case, price = round(valuizer(lowest_price),2))
-        await add_case_record(case)
+            lowest_price = response["lowest_price"]
+            case = Case_Price_Model(name=case, price=round(valuizer(lowest_price), 2))
+            await add_case_record(case)
 
 
         
