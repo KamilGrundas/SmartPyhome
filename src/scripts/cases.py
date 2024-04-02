@@ -13,34 +13,6 @@ def valuizer(value):
     result = value.replace(",", ".").replace("zł", "")
     return float(result)
 
-items = {
-    "CS20 Case": 980,
-    "Chroma 2 Case": 169,
-    "Chroma 3 Case": 1,
-    "Chroma Case": 4,
-    "Clutch Case": 24,
-    "Danger Zone Case": 94,
-    "Falchion Case": 8,
-    "Fracture Case": 4,
-    "Gamma 2 Case": 240,
-    "Gamma Case": 3,
-    "Glove Case": 14,
-    "Horizon Case": 7,
-    "Operation Breakout Weapon Case": 22,
-    "Operation Wildfire Case": 9,
-    "Prisma 2 Case": 4,
-    "Prisma Case": 5,
-    "Revolver Case": 6,
-    "Shadow Case": 15,
-    "Shattered Web Case": 4,
-    "Snakebite Case": 221,
-    "Spectrum 2 Case": 21,
-    "Spectrum Case": 4,
-    "Operation Broken Fang Case": 50,
-    "Dreams & Nightmares Case": 2,
-    "Revolution Case": 3,
-    "Recoil Case": 4,
-}
 
 cases = ("CS20 Case",
     "Chroma 2 Case",
@@ -77,7 +49,7 @@ async def fetch_case_data(session, url):
     async with session.get(url) as response:
         return await response.json()
 
-async def main():
+async def get_case_prices():
     async with aiohttp.ClientSession() as session:
         for case in cases:
             url = url_core + urlizer(case)
@@ -89,6 +61,33 @@ async def main():
             await add_case_record(case)
 
 
-        
+#  items = {
+#     "CS20 Case": 980,
+#     "Chroma 2 Case": 169,
+#     "Chroma 3 Case": 1,
+#     "Chroma Case": 4,
+#     "Clutch Case": 24,
+#     "Danger Zone Case": 94,
+#     "Falchion Case": 8,
+#     "Fracture Case": 4,
+#     "Gamma 2 Case": 240,
+#     "Gamma Case": 3,
+#     "Glove Case": 14,
+#     "Horizon Case": 7,
+#     "Operation Breakout Weapon Case": 22,
+#     "Operation Wildfire Case": 9,
+#     "Prisma 2 Case": 4,
+#     "Prisma Case": 5,
+#     "Revolver Case": 6,
+#     "Shadow Case": 15,
+#     "Shattered Web Case": 4,
+#     "Snakebite Case": 221,
+#     "Spectrum 2 Case": 21,
+#     "Spectrum Case": 4,
+#     "Operation Broken Fang Case": 50,
+#     "Dreams & Nightmares Case": 2,
+#     "Revolution Case": 3,
+#     "Recoil Case": 4,
+# }       
 
 
