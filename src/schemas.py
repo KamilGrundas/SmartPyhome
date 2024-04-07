@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class Case_Price_Model(BaseModel):
+class CasePriceModel(BaseModel):
     name: str = Field(max_length=50)
     price: float = Field()
 

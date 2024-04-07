@@ -1,65 +1,64 @@
-from time import sleep
 from src.repository.cases import add_case_record
-from src.schemas import Case_Price_Model
+from src.schemas import CasePriceModel
 import asyncio
 import aiohttp
 
-def urlizer(name):
+
+def urlize(name):
     result = name.replace(" ", "%20").replace("&", "%26")
     return result
 
 
-def valuizer(value):
+def values(value):
     result = value.replace(",", ".").replace("zł", "")
     return float(result)
 
 
 cases = ("CS20 Case",
-    "Chroma 2 Case",
-    "Chroma 3 Case",
-    "Chroma Case",
-    "Clutch Case",
-    "Danger Zone Case",
-    "Falchion Case",
-    "Fracture Case",
-    "Gamma 2 Case",
-    "Gamma Case",
-    "Glove Case",
-    "Horizon Case",
-    "Operation Breakout Weapon Case",
-    "Operation Wildfire Case",
-    "Prisma 2 Case",
-    "Prisma Case",
-    "Revolver Case",
-    "Shadow Case",
-    "Shattered Web Case",
-    "Snakebite Case",
-    "Spectrum 2 Case",
-    "Spectrum Case",
-    "Operation Broken Fang Case",
-    "Dreams & Nightmares Case",
-    "Revolution Case",
-    "Recoil Case")
-
-
+         "Chroma 2 Case",
+         "Chroma 3 Case",
+         "Chroma Case",
+         "Clutch Case",
+         "Danger Zone Case",
+         "Falchion Case",
+         "Fracture Case",
+         "Gamma 2 Case",
+         "Gamma Case",
+         "Glove Case",
+         "Horizon Case",
+         "Operation Breakout Weapon Case",
+         "Operation Wildfire Case",
+         "Prisma 2 Case",
+         "Prisma Case",
+         "Revolver Case",
+         "Shadow Case",
+         "Shattered Web Case",
+         "Snakebite Case",
+         "Spectrum 2 Case",
+         "Spectrum Case",
+         "Operation Broken Fang Case",
+         "Dreams & Nightmares Case",
+         "Revolution Case",
+         "Recoil Case")
 
 url_core = "https://steamcommunity.com/market/priceoverview/?appid=730&currency=6&market_hash_name="
+
 
 async def fetch_case_data(session, url):
     async with session.get(url) as response:
         return await response.json()
 
+
 async def get_case_prices():
     async with aiohttp.ClientSession() as session:
         for case in cases:
-            url = url_core + urlizer(case)
+            url = url_core + urlize(case)
             response = await fetch_case_data(session, url)
             await asyncio.sleep(3)  # Oczekiwanie 3 sekundy między zapytaniami
 
             lowest_price = response["lowest_price"]
-            case = Case_Price_Model(name=case, price=round(valuizer(lowest_price), 2))
+            case = CasePriceModel(name=case, price=round(values(lowest_price), 2))
             await add_case_record(case)
-
 
 #  items = {
 #     "CS20 Case": 980,
@@ -88,6 +87,4 @@ async def get_case_prices():
 #     "Dreams & Nightmares Case": 2,
 #     "Revolution Case": 3,
 #     "Recoil Case": 4,
-# }       
-
-
+# }

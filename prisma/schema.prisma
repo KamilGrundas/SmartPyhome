@@ -12,7 +12,7 @@ generator client {
 }
 
 // data models
-model Case_Price {
+model CasePrice {
   id        Int     @id @default(autoincrement())
   name     String
   price   Float
