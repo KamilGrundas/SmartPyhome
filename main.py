@@ -1,7 +1,8 @@
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import HTMLResponse
 from src.routes import cases, camera
+from src.repository.camera import video_stream
 from src.scripts.cases import get_case_prices
 from fastapi.templating import Jinja2Templates
 
@@ -12,9 +13,11 @@ app = FastAPI()
 app.include_router(cases.router, prefix="")
 app.include_router(camera.router, prefix="")
 
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-   return templates.TemplateResponse('index.html', {"request": request})
+    return templates.TemplateResponse('index.html', {"request": request})
+
 
 @app.post("/load_case_prices/")
 async def load_case_prices():

@@ -1,9 +1,35 @@
-<html>
-  <head>
-    <title>Video Streaming Demonstration</title>
-  </head>
-  <body>
-    <h1>Video Streaming Demonstration</h1>
-    <img src="/cameras/stream/">
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Viewer</title>
+</head>
+<body>
+    <img id="video_feed">
+
+    <script>
+        const videoFeed = document.getElementById("video_feed");
+
+        const ws = new WebSocket("ws://192.168.1.128:8000/cameras/camera_1");
+
+        ws.onopen = function(event) {
+            console.log("WebSocket connected.");
+        };
+
+        ws.onmessage = function(event) {
+            const imageData = event.data;
+            const blob = new Blob([imageData], { type: "image/jpeg" });
+            const imageUrl = URL.createObjectURL(blob);
+            videoFeed.src = imageUrl;
+        };
+
+        ws.onclose = function(event) {
+            console.log("WebSocket closed.");
+        };
+
+        ws.onerror = function(event) {
+            console.error("WebSocket error:", event);
+        };
+    </script>
+</body>
 </html>
