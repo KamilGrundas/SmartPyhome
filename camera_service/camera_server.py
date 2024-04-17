@@ -21,9 +21,6 @@ IP = get_ip()
 
 PORTS_FILE = "camera_service/ports.bin"
 
-port_connection.clear_ports_file(PORTS_FILE)
-
-
 class VideoServer:
     def __init__(self, host, port, viewer_port):
         self.host = host
@@ -110,6 +107,7 @@ def start_server_process(host, camera_port, viewer_port):
 
 
 if __name__ == "__main__":
+    port_connection.clear_ports_file(PORTS_FILE)
     camera_ports = [6001, 6002]  # Define the ports for each camera
     viewer_ports = [7001, 7002]  # Define the viewer ports for each camera
     processes = []

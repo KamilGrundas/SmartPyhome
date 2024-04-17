@@ -2,8 +2,10 @@ import pickle
 
 
 def add_port_to_file(filename, port):
-    with open(filename, 'ab') as file:  # 'ab' for append in binary mode
-        pickle.dump([port], file)  # Zapisuje port jako listę, aby utrzymać spójność danych
+    ports = read_ports_from_file(filename)  # Odczytujemy aktualną listę portów
+    ports.append(port)  # Dodajemy nowy port do listy
+    with open(filename, 'wb') as file:  # Otwieramy plik w trybie zapisu binarnego, który czyści poprzednią zawartość
+        pickle.dump(ports, file)  # Zapisujemy zaktualizowaną listę portów
 
 
 # Przykład użycia
@@ -27,7 +29,6 @@ def read_ports_from_file(filename):
 
 def remove_specific_port(filename, port_to_remove):
     ports = read_ports_from_file(filename)
-    # Usuwamy port, zakładając, że ports jest prostą listą liczb całkowitych
-    ports = [port for port in ports if port != port_to_remove]
+    ports = [port for port in ports if port != port_to_remove]  # Usuwamy określony port
     with open(filename, 'wb') as file:
-        pickle.dump(ports, file)  # Zapisujemy zaktualizowaną listę portów
+        pickle.dump(ports, file)  # Zapisujemy listę bez usuniętego portu
