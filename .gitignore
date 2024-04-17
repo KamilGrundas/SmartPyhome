@@ -9,3 +9,7 @@ __pycache__/
 .venv
 database.db
 __pycache__/
+
+records
+
+camera_service/ports.bin

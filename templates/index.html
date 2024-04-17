@@ -1,35 +1,35 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebSocket Viewer</title>
+    <!-- Link do CSS Bootstrap 5 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
 <body>
-    <img id="video_feed">
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <img src="/cameras/video/1" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <img src="/cameras/video/2" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        const videoFeed = document.getElementById("video_feed");
 
-        const ws = new WebSocket("ws://192.168.1.128:8000/cameras/camera_1");
-
-        ws.onopen = function(event) {
-            console.log("WebSocket connected.");
-        };
-
-        ws.onmessage = function(event) {
-            const imageData = event.data;
-            const blob = new Blob([imageData], { type: "image/jpeg" });
-            const imageUrl = URL.createObjectURL(blob);
-            videoFeed.src = imageUrl;
-        };
-
-        ws.onclose = function(event) {
-            console.log("WebSocket closed.");
-        };
-
-        ws.onerror = function(event) {
-            console.error("WebSocket error:", event);
-        };
-    </script>
 </body>
 </html>

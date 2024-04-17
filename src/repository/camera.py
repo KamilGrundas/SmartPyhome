@@ -1,24 +1,31 @@
-from fastapi import HTTPException, FastAPI, WebSocket
-import websockets
+import cv2
+import asyncio
+import numpy as np
 
-IP = "192.168.1.131"
-PORT = 8765
-SERVER_ADDRESS = f"ws://{IP}:{PORT}"
+async def get_video_stream(camera_port):
+    reader, writer = await asyncio.open_connection('192.168.1.128', camera_port)
 
-clients = set()
-
-
-async def video_stream(websocket: WebSocket):
-    await websocket.accept()
-    clients.add(websocket)
-    print(f"Client connected: {websocket}")
     try:
         while True:
-            # Odbierz dane z serwera wideo (adres: SERVER_ADDRESS)
-            async with websockets.connect(SERVER_ADDRESS) as video_ws:
-                async for data in video_ws:
-                    # Przekaż dane do wszystkich klientów WebSocket
-                    for client in clients:
-                        await client.send_text(data)
+            # Assume that the first 100 bytes include the frame length as a string
+            data = await reader.read(100)  # Read data for frame size
+            if not data:
+                break
+            # Extract frame size from data
+            frame_length = int(data.decode('utf-8').strip())  # Decoding only the size part, which is in text format
+
+            # Now read the exact amount of data for the frame
+            frame_data = b''
+            while len(frame_data) < frame_length:
+                chunk = await reader.read(frame_length - len(frame_data))
+                frame_data += chunk
+
+            # Process the image data directly
+            frame = np.frombuffer(frame_data, dtype=np.uint8)
+            frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
+            ret, buffer = cv2.imencode('.jpg', frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
     finally:
-        clients.remove(websocket)
+        writer.close()
+

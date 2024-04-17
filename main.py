@@ -1,10 +1,11 @@
 import uvicorn
-from fastapi import FastAPI, Request, WebSocket
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from src.routes import cases, camera
-from src.repository.camera import video_stream
 from src.scripts.cases import get_case_prices
 from fastapi.templating import Jinja2Templates
+from camera_service import port_connection
+import subprocess
 
 templates = Jinja2Templates(directory="templates")
 
@@ -12,6 +13,10 @@ app = FastAPI()
 
 app.include_router(cases.router, prefix="")
 app.include_router(camera.router, prefix="")
+
+
+def run_camera_server(filename):
+    process = subprocess.Popen(['python', filename])
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -25,4 +30,5 @@ async def load_case_prices():
 
 
 if __name__ == "__main__":
+    run_camera_server("camera_service/camera_server.py")
     uvicorn.run(app, host="192.168.1.128", port=8000)
