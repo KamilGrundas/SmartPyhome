@@ -5,6 +5,7 @@ from src.routes import cases, camera
 from src.scripts.cases import get_case_prices
 from fastapi.templating import Jinja2Templates
 from camera_service import port_connection
+from camera_service.camera_server import IP
 import subprocess
 
 templates = Jinja2Templates(directory="templates")
@@ -33,4 +34,4 @@ async def load_case_prices():
 
 if __name__ == "__main__":
     run_camera_server("camera_service/camera_server.py")
-    uvicorn.run(app, host="192.168.1.128", port=8000)
+    uvicorn.run(app, host=IP, port=8000)
