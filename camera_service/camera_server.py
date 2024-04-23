@@ -3,23 +3,13 @@ import cv2
 import numpy as np
 import datetime
 from multiprocessing import Process
-import socket
+from src.conf.config import settings
 from camera_service import port_connection
 
-
-def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-    finally:
-        s.close()
-    return ip
-
-
-IP = get_ip()
+IP = settings.ip
 
 PORTS_FILE = "camera_service/ports.bin"
+
 
 class VideoServer:
     def __init__(self, host, port, viewer_port):

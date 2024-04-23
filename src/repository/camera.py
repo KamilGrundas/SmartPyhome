@@ -1,9 +1,13 @@
 import cv2
 import asyncio
 import numpy as np
+from src.conf.config import settings
+
+IP = settings.ip
+
 
 async def get_video_stream(camera_port):
-    reader, writer = await asyncio.open_connection('192.168.1.128', camera_port)
+    reader, writer = await asyncio.open_connection(IP, camera_port)
 
     try:
         while True:
@@ -28,4 +32,3 @@ async def get_video_stream(camera_port):
                    b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
     finally:
         writer.close()
-

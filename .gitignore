@@ -12,4 +12,6 @@ __pycache__/
 
 records
 
+.idea
+
 camera_service/ports.bin

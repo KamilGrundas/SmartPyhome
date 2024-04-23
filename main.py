@@ -5,9 +5,10 @@ from src.routes import cases, camera
 from src.scripts.cases import get_case_prices
 from fastapi.templating import Jinja2Templates
 from camera_service import port_connection
-from camera_service.camera_server import IP
+from src.conf.config import settings
 import subprocess
 
+IP = settings.ip
 templates = Jinja2Templates(directory="templates")
 
 app = FastAPI()
