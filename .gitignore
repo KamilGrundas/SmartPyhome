@@ -1,17 +1,45 @@
-# Byte-compiled / optimized / DLL files
+# Eniroments
+.venv/
+.env
+.env.*
+.envrc
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
+# Django
+db.sqlite3
+media/
+static/
+staticfiles/
+logs/
+*.log
 
-.venv
-database.db
-__pycache__/
+# Tools/caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.cache/
 
-records
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
 
-.idea
+# Builds
+dist/
+build/
+*.egg-info/
+.eggs/
+.tox/
 
-camera_service/ports.bin
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml

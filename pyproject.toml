@@ -1,0 +1,14 @@
+[project]
+name = "smartpyhome"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "bcrypt<5",
+    "fastapi[standard]>=0.120.2",
+    "passlib>=1.7.4",
+    "pydantic-settings>=2.11.0",
+    "pyjwt>=2.10.1",
+    "sqlmodel>=0.0.27",
+]
