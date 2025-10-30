@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>SmartPyHome – Kamery</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif; margin:2rem; background:#0b0d10; color:#e6edf3; }
+    .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 1rem; }
+    .card { background:#11161c; border:1px solid #202a35; border-radius:16px; padding:1rem; }
+    .card h2 { font-size:1rem; margin:0 0 .5rem; opacity:.9 }
+    img { width:100%; height:auto; border-radius:12px; display:block; background:#0e1217; }
+    .muted { opacity:.7; font-size:.9rem; }
+    a.btn { padding:.4rem .7rem; border-radius:10px; border:1px solid #2b3644; background:#131b25; color:#e6edf3; text-decoration:none; }
+    a.btn:hover { background:#182334; }
+    .error { background:#2a1114; border:1px solid #4a1c21; color:#ffd7d7; padding:.6rem .7rem; border-radius:12px; display:none; margin-bottom:1rem; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1>Kamery</h1>
+    <a class="btn" id="logoutBtn" href="#">Wyloguj</a>
+  </div>
+
+  <div id="err" class="error"></div>
+  <div id="grid" class="grid"></div>
+
+  <script>
+    const API_PREFIX = "/api/v1";
+    const err = document.getElementById('err');
+    const grid = document.getElementById('grid');
+
+    function tokenOrRedirect() {
+      const t = localStorage.getItem('access_token');
+      if (!t) { location.href = '/login'; return null; }
+      return t.replace(/^Bearer\s+/i, '');
+    }
+
+    async function loadCameras() {
+      const raw = tokenOrRedirect(); if (!raw) return;
+      try {
+        const res = await fetch(`${API_PREFIX}/cameras`, {
+          headers: { 'Authorization': `Bearer ${raw}` }
+        });
+        if (res.status === 401 || res.status === 403) { localStorage.removeItem('access_token'); location.href = '/login'; return; }
+        if (!res.ok) throw new Error(`Błąd ${res.status}`);
+        const data = await res.json();
+        const cams = data.data || [];
+        if (cams.length === 0) { grid.innerHTML = "<p>Brak kamer w bazie.</p>"; return; }
+        grid.innerHTML = '';
+        for (const cam of cams) {
+          const card = document.createElement('div');
+          card.className = 'card';
+          const h = document.createElement('h2');
+          h.innerHTML = `${cam.name} <span class="muted">(${cam.id})</span>`;
+          const img = document.createElement('img');
+          // stream dla superusera – przekazujemy token w query
+          img.src = `${API_PREFIX}/cameras/${cam.id}/video?token=${encodeURIComponent(raw)}`;
+          img.alt = `podgląd ${cam.name}`;
+          card.appendChild(h);
+          card.appendChild(img);
+          grid.appendChild(card);
+        }
+      } catch (e) {
+        err.style.display = 'block';
+        err.textContent = e.message || String(e);
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('access_token');
+      location.href = '/login';
+    });
+
+    // start
+    loadCameras();
+  </script>
+</body>
+</html>

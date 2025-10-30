@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Logowanie – SmartPyHome</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif; margin:0; background:#0b0d10; color:#e6edf3; display:grid; place-items:center; min-height:100vh; }
+    .card { width:min(420px,92vw); background:#11161c; border:1px solid #202a35; border-radius:16px; padding:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,.3); }
+    h1 { font-size:1.25rem; margin:0 0 1rem; }
+    label { display:block; font-size:.9rem; margin:.5rem 0 .25rem; opacity:.85; }
+    input { width:100%; padding:.6rem .7rem; border-radius:12px; border:1px solid #2a3a4d; background:#0e1217; color:#e6edf3; }
+    button { margin-top:1rem; width:100%; padding:.65rem .7rem; border-radius:12px; border:1px solid #2a3a4d; background:#131b25; color:#e6edf3; cursor:pointer; }
+    button:hover { background:#182334; }
+    .err { margin-top:.75rem; background:#2a1114; border:1px solid #4a1c21; color:#ffd7d7; padding:.6rem .7rem; border-radius:12px; display:none; }
+    .muted { font-size:.9rem; opacity:.75; margin-top:.5rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Zaloguj się</h1>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" name="username" type="email" required />
+      <label for="password">Hasło</label>
+      <input id="password" name="password" type="password" minlength="8" required />
+      <button type="submit">Zaloguj</button>
+      <div id="err" class="err"></div>
+      <p class="muted">Po zalogowaniu przejdziesz do podglądu kamer.</p>
+    </form>
+  </div>
+
+  <script>
+    const API_PREFIX = "/api/v1";
+    const form = document.getElementById('loginForm');
+    const err = document.getElementById('err');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.style.display = 'none';
+      const fd = new FormData(form);
+      try {
+        const res = await fetch(`${API_PREFIX}/login/access-token`, { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(`Błąd logowania: ${res.status}`);
+        const data = await res.json();
+        if (!data.access_token) throw new Error('Brak access_token w odpowiedzi');
+
+        // zapisz w localStorage i idź do widoku kamer
+        localStorage.setItem('access_token', `Bearer ${data.access_token}`);
+        location.href = '/';
+      } catch (ex) {
+        err.textContent = ex.message || String(ex);
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

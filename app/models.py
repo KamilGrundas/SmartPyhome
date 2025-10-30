@@ -64,3 +64,25 @@ class Token(SQLModel):
 # Contents of JWT token
 class TokenPayload(SQLModel):
     sub: str | None = None
+
+
+class CameraBase(SQLModel):
+    name: str = Field(unique=True, index=True, max_length=255)
+    ip_address: str = Field(max_length=255)
+
+
+class Camera(CameraBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+
+class CameraPublic(CameraBase):
+    id: uuid.UUID
+
+
+class CamerasPublic(SQLModel):
+    data: list[CameraPublic]
+    count: int
+
+
+class CameraCreate(CameraBase):
+    pass
