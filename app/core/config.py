@@ -23,9 +23,22 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: str
     FIRST_SUPERUSER_PASSWORD: str
 
+    # Database
     SQLITE_DB_FILE: str = "./app.db"
     SQLITE_SCHEME: str = "sqlite"
     DB_URI: str | None = None
+
+    # Cameras
+    CAM_USER: str
+    CAM_PASS: str
+    RTSP_PATH: str
+
+    # Recording settings
+    RECORD_ENABLED: bool = True
+    RECORD_DIR: str = "recordings"
+    RECORD_SEGMENT_SECONDS: int = 120
+    RECORD_CODEC: str = "mp4v"
+    RECORD_FPS_FALLBACK: float = 25.0
 
     @computed_field  # type: ignore[prop-decorator]
     @property
