@@ -1,0 +1,17 @@
+services:
+
+  # Override backend and prestart to use host networking on Linux.
+  # This makes Wake-on-LAN magic packets go out through the physical
+  # network interface instead of being trapped in the Docker bridge.
+  # Also removes port mapping (not needed in host mode - port 8000
+  # is directly on the host).
+  prestart:
+    network_mode: host
+    environment:
+      POSTGRES_SERVER: "localhost"
+
+  backend:
+    network_mode: host
+    ports: !reset []
+    environment:
+      POSTGRES_SERVER: "localhost"

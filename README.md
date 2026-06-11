@@ -15,7 +15,15 @@ A home lab management application for managing devices, services, and infrastruc
 
 - [Docker](https://www.docker.com) with Docker Compose
 
-### Run
+### Run on Linux / Raspberry Pi (production)
+
+```bash
+docker compose -f compose.yml -f compose.prod.yml up --build -d
+```
+
+`compose.prod.yml` switches the backend to `network_mode: host` so Wake-on-LAN magic packets reach the physical LAN.
+
+### Run on Mac / Windows (development)
 
 ```bash
 docker compose up --build
@@ -28,14 +36,18 @@ docker compose up --build
 | API docs | http://localhost:8000/docs |
 | Adminer  | http://localhost:8080      |
 
-Default credentials are set in `.env` (`FIRST_SUPERUSER` / `FIRST_SUPERUSER_PASSWORD`).
+Default credentials: see `.env` (`FIRST_SUPERUSER` / `FIRST_SUPERUSER_PASSWORD`).
+
+> Wake-on-LAN won't work from Mac/Windows because Docker Desktop runs inside
+> a VM — packets can't reach your physical LAN. Deploy to a Linux machine on
+> the same network as the computers you want to wake.
 
 ### Configuration
 
-Adjust values in `.env` as needed. For any non-local deployment, change at minimum:
+Copy `.env.example` to `.env` and adjust. Change at minimum before deploying:
 
 ```bash
-SECRET_KEY=<generate with: python -c "import secrets; print(secrets.token_urlsafe(32))">
+SECRET_KEY=<python -c "import secrets; print(secrets.token_urlsafe(32))">
 FIRST_SUPERUSER_PASSWORD=<strong password>
 POSTGRES_PASSWORD=<strong password>
 ```
