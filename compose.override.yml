@@ -1,0 +1,31 @@
+services:
+
+  db:
+    restart: "no"
+
+  backend:
+    restart: "no"
+    command:
+      - fastapi
+      - run
+      - --reload
+      - "app/main.py"
+    develop:
+      watch:
+        - path: ./backend
+          action: sync
+          target: /app/backend
+          ignore:
+            - ./backend/.venv
+            - .venv
+        - path: ./backend/pyproject.toml
+          action: rebuild
+    volumes:
+      - ./backend/htmlcov:/app/backend/htmlcov
+
+  frontend:
+    restart: "no"
+    build:
+      args:
+        - VITE_API_URL=http://localhost:8000
+        - NODE_ENV=development
