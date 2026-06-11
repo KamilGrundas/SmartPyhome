@@ -3,7 +3,66 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { ComputersReadComputersData, ComputersReadComputersResponse, ComputersCreateComputerData, ComputersCreateComputerResponse, ComputersReadComputerData, ComputersReadComputerResponse, ComputersUpdateComputerData, ComputersUpdateComputerResponse, ComputersDeleteComputerData, ComputersDeleteComputerResponse, ComputersWakeComputerData, ComputersWakeComputerResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsHealthCheckResponse } from './types.gen';
+
+export class ComputersService {
+    public static readComputers(data: ComputersReadComputersData = {}): CancelablePromise<ComputersReadComputersResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/computers/',
+            query: { skip: data.skip, limit: data.limit },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static createComputer(data: ComputersCreateComputerData): CancelablePromise<ComputersCreateComputerResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/computers/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static readComputer(data: ComputersReadComputerData): CancelablePromise<ComputersReadComputerResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/computers/{id}',
+            path: { id: data.id },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static updateComputer(data: ComputersUpdateComputerData): CancelablePromise<ComputersUpdateComputerResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/computers/{id}',
+            path: { id: data.id },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static deleteComputer(data: ComputersDeleteComputerData): CancelablePromise<ComputersDeleteComputerResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/computers/{id}',
+            path: { id: data.id },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static wakeComputer(data: ComputersWakeComputerData): CancelablePromise<ComputersWakeComputerResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/computers/{id}/wake',
+            path: { id: data.id },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+}
 
 export class ItemsService {
     /**

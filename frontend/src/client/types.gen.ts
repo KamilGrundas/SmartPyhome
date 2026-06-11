@@ -13,6 +13,34 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type ComputerCreate = {
+    name: string;
+    mac_address: string;
+    ip_address?: (string | null);
+    description?: (string | null);
+};
+
+export type ComputerPublic = {
+    name: string;
+    mac_address: string;
+    ip_address?: (string | null);
+    description?: (string | null);
+    id: string;
+    created_at?: (string | null);
+};
+
+export type ComputersPublic = {
+    data: Array<ComputerPublic>;
+    count: number;
+};
+
+export type ComputerUpdate = {
+    name?: (string | null);
+    mac_address?: (string | null);
+    ip_address?: (string | null);
+    description?: (string | null);
+};
+
 export type ItemCreate = {
     title: string;
     description?: (string | null);
@@ -196,3 +224,41 @@ export type UsersDeleteUserData = {
 export type UsersDeleteUserResponse = (Message);
 
 export type UtilsHealthCheckResponse = (boolean);
+
+export type ComputersReadComputersData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type ComputersReadComputersResponse = (ComputersPublic);
+
+export type ComputersCreateComputerData = {
+    requestBody: ComputerCreate;
+};
+
+export type ComputersCreateComputerResponse = (ComputerPublic);
+
+export type ComputersReadComputerData = {
+    id: string;
+};
+
+export type ComputersReadComputerResponse = (ComputerPublic);
+
+export type ComputersUpdateComputerData = {
+    id: string;
+    requestBody: ComputerUpdate;
+};
+
+export type ComputersUpdateComputerResponse = (ComputerPublic);
+
+export type ComputersDeleteComputerData = {
+    id: string;
+};
+
+export type ComputersDeleteComputerResponse = (Message);
+
+export type ComputersWakeComputerData = {
+    id: string;
+};
+
+export type ComputersWakeComputerResponse = (Message);

@@ -66,6 +66,47 @@ class UsersPublic(SQLModel):
     count: int
 
 
+# Computer models
+
+class ComputerBase(SQLModel):
+    name: str = Field(max_length=255)
+    mac_address: str = Field(
+        max_length=17,
+        description="MAC address in XX:XX:XX:XX:XX:XX format",
+    )
+    ip_address: str | None = Field(default=None, max_length=45)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class ComputerCreate(ComputerBase):
+    pass
+
+
+class ComputerUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=255)
+    mac_address: str | None = Field(default=None, max_length=17)
+    ip_address: str | None = Field(default=None, max_length=45)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class Computer(ComputerBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+class ComputerPublic(ComputerBase):
+    id: uuid.UUID
+    created_at: datetime | None = None
+
+
+class ComputersPublic(SQLModel):
+    data: list[ComputerPublic]
+    count: int
+
+
 # Shared properties
 class ItemBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
