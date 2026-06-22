@@ -3,7 +3,7 @@ services:
   db:
     restart: "no"
 
-  backend:
+  app:
     restart: "no"
     command:
       - fastapi
@@ -20,12 +20,9 @@ services:
             - .venv
         - path: ./backend/pyproject.toml
           action: rebuild
+        - path: ./frontend/src
+          action: rebuild
+        - path: ./frontend/package.json
+          action: rebuild
     volumes:
       - ./backend/htmlcov:/app/backend/htmlcov
-
-  frontend:
-    restart: "no"
-    build:
-      args:
-        - VITE_API_URL=http://localhost:8000
-        - NODE_ENV=development
