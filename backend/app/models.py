@@ -148,6 +148,127 @@ class ItemsPublic(SQLModel):
     count: int
 
 
+# RFID Access models
+
+# Link tables
+class CardGroup(SQLModel, table=True):
+    card_id: uuid.UUID = Field(foreign_key="accesscard.id", primary_key=True, ondelete="CASCADE")
+    group_id: uuid.UUID = Field(foreign_key="accessgroup.id", primary_key=True, ondelete="CASCADE")
+
+
+class CardAccessPoint(SQLModel, table=True):
+    card_id: uuid.UUID = Field(foreign_key="accesscard.id", primary_key=True, ondelete="CASCADE")
+    point_id: uuid.UUID = Field(foreign_key="accesspoint.id", primary_key=True, ondelete="CASCADE")
+
+
+class GroupAccessPoint(SQLModel, table=True):
+    group_id: uuid.UUID = Field(foreign_key="accessgroup.id", primary_key=True, ondelete="CASCADE")
+    point_id: uuid.UUID = Field(foreign_key="accesspoint.id", primary_key=True, ondelete="CASCADE")
+
+
+class AccessPointBase(SQLModel):
+    name: str = Field(max_length=255)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class AccessPointCreate(AccessPointBase):
+    pass
+
+
+class AccessPointUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=255)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class AccessPoint(AccessPointBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+class AccessPointPublic(AccessPointBase):
+    id: uuid.UUID
+    created_at: datetime | None = None
+
+
+class AccessPointsPublic(SQLModel):
+    data: list[AccessPointPublic]
+    count: int
+
+
+class AccessGroupBase(SQLModel):
+    name: str = Field(max_length=255)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class AccessGroupCreate(AccessGroupBase):
+    pass
+
+
+class AccessGroupUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=255)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class AccessGroup(AccessGroupBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+class AccessGroupPublic(AccessGroupBase):
+    id: uuid.UUID
+    created_at: datetime | None = None
+    access_point_ids: list[uuid.UUID] = []
+
+
+class AccessGroupsPublic(SQLModel):
+    data: list[AccessGroupPublic]
+    count: int
+
+
+class AccessCardBase(SQLModel):
+    uid: str = Field(unique=True, max_length=50, description="RFID card UID e.g. AA:BB:CC:DD")
+    label: str = Field(max_length=255)
+    is_active: bool = True
+    user_id: uuid.UUID | None = Field(default=None, foreign_key="user.id", ondelete="SET NULL")
+
+
+class AccessCardCreate(AccessCardBase):
+    pass
+
+
+class AccessCardUpdate(SQLModel):
+    uid: str | None = Field(default=None, max_length=50)
+    label: str | None = Field(default=None, max_length=255)
+    is_active: bool | None = None
+    user_id: uuid.UUID | None = None
+
+
+class AccessCard(AccessCardBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+class AccessCardPublic(AccessCardBase):
+    id: uuid.UUID
+    created_at: datetime | None = None
+    access_point_ids: list[uuid.UUID] = []
+    group_ids: list[uuid.UUID] = []
+
+
+class AccessCardsPublic(SQLModel):
+    data: list[AccessCardPublic]
+    count: int
+
+
 # Generic message
 class Message(SQLModel):
     message: str

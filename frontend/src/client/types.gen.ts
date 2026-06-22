@@ -262,3 +262,200 @@ export type ComputersWakeComputerData = {
 };
 
 export type ComputersWakeComputerResponse = (Message);
+
+export type AccessPointPublic = {
+    name: string;
+    description?: (string | null);
+    id: string;
+    created_at?: (string | null);
+};
+
+export type AccessPointsPublic = {
+    data: Array<AccessPointPublic>;
+    count: number;
+};
+
+export type AccessPointCreate = {
+    name: string;
+    description?: (string | null);
+};
+
+export type AccessPointUpdate = {
+    name?: (string | null);
+    description?: (string | null);
+};
+
+export type AccessGroupPublic = {
+    name: string;
+    description?: (string | null);
+    id: string;
+    created_at?: (string | null);
+    access_point_ids: Array<string>;
+};
+
+export type AccessGroupsPublic = {
+    data: Array<AccessGroupPublic>;
+    count: number;
+};
+
+export type AccessGroupCreate = {
+    name: string;
+    description?: (string | null);
+};
+
+export type AccessGroupUpdate = {
+    name?: (string | null);
+    description?: (string | null);
+};
+
+export type AccessCardPublic = {
+    uid: string;
+    label: string;
+    is_active: boolean;
+    user_id?: (string | null);
+    id: string;
+    created_at?: (string | null);
+    access_point_ids: Array<string>;
+    group_ids: Array<string>;
+};
+
+export type AccessCardsPublic = {
+    data: Array<AccessCardPublic>;
+    count: number;
+};
+
+export type AccessCardCreate = {
+    uid: string;
+    label: string;
+    is_active?: boolean;
+    user_id?: (string | null);
+};
+
+export type AccessCardUpdate = {
+    uid?: (string | null);
+    label?: (string | null);
+    is_active?: (boolean | null);
+    user_id?: (string | null);
+};
+
+// Access service request/response types
+
+export type AccessListCardsData = {
+    skip?: number;
+    limit?: number;
+};
+
+export type AccessListCardsResponse = (AccessCardsPublic);
+
+export type AccessCreateCardData = {
+    requestBody: AccessCardCreate;
+};
+
+export type AccessCreateCardResponse = (AccessCardPublic);
+
+export type AccessUpdateCardData = {
+    cardId: string;
+    requestBody: AccessCardUpdate;
+};
+
+export type AccessUpdateCardResponse = (AccessCardPublic);
+
+export type AccessDeleteCardData = {
+    cardId: string;
+};
+
+export type AccessDeleteCardResponse = (Message);
+
+export type AccessAddCardPointData = {
+    cardId: string;
+    pointId: string;
+};
+
+export type AccessAddCardPointResponse = (AccessCardPublic);
+
+export type AccessRemoveCardPointData = {
+    cardId: string;
+    pointId: string;
+};
+
+export type AccessRemoveCardPointResponse = (AccessCardPublic);
+
+export type AccessAddCardGroupData = {
+    cardId: string;
+    groupId: string;
+};
+
+export type AccessAddCardGroupResponse = (AccessCardPublic);
+
+export type AccessRemoveCardGroupData = {
+    cardId: string;
+    groupId: string;
+};
+
+export type AccessRemoveCardGroupResponse = (AccessCardPublic);
+
+export type AccessListGroupsData = {
+    skip?: number;
+    limit?: number;
+};
+
+export type AccessListGroupsResponse = (AccessGroupsPublic);
+
+export type AccessCreateGroupData = {
+    requestBody: AccessGroupCreate;
+};
+
+export type AccessCreateGroupResponse = (AccessGroupPublic);
+
+export type AccessUpdateGroupData = {
+    groupId: string;
+    requestBody: AccessGroupUpdate;
+};
+
+export type AccessUpdateGroupResponse = (AccessGroupPublic);
+
+export type AccessDeleteGroupData = {
+    groupId: string;
+};
+
+export type AccessDeleteGroupResponse = (Message);
+
+export type AccessAddGroupPointData = {
+    groupId: string;
+    pointId: string;
+};
+
+export type AccessAddGroupPointResponse = (AccessGroupPublic);
+
+export type AccessRemoveGroupPointData = {
+    groupId: string;
+    pointId: string;
+};
+
+export type AccessRemoveGroupPointResponse = (AccessGroupPublic);
+
+export type AccessListPointsData = {
+    skip?: number;
+    limit?: number;
+};
+
+export type AccessListPointsResponse = (AccessPointsPublic);
+
+export type AccessCreatePointData = {
+    requestBody: AccessPointCreate;
+};
+
+export type AccessCreatePointResponse = (AccessPointPublic);
+
+export type AccessUpdatePointData = {
+    pointId: string;
+    requestBody: AccessPointUpdate;
+};
+
+export type AccessUpdatePointResponse = (AccessPointPublic);
+
+export type AccessDeletePointData = {
+    pointId: string;
+};
+
+export type AccessDeletePointResponse = (Message);

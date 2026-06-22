@@ -19,6 +19,7 @@ import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutComputersRouteImport } from './routes/_layout/computers'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutAccessCardsRouteImport } from './routes/_layout/access-cards'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -69,6 +70,11 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutAccessCardsRoute = LayoutAccessCardsRouteImport.update({
+  id: '/_layout/access-cards',
+  path: '/access-cards',
+  getParentRoute: () => LayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/access-cards': typeof LayoutAccessCardsRoute
   '/computers': typeof LayoutComputersRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/access-cards': typeof LayoutAccessCardsRoute
   '/computers': typeof LayoutComputersRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/access-cards': typeof LayoutAccessCardsRoute
   '/_layout/computers': typeof LayoutComputersRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/access-cards'
     | '/computers'
     | '/items'
     | '/settings'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/access-cards'
     | '/computers'
     | '/items'
     | '/settings'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
+    | '/_layout/access-cards'
     | '/_layout/computers'
     | '/_layout/items'
     | '/_layout/settings'
@@ -222,11 +234,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/access-cards': {
+      id: '/_layout/access-cards'
+      path: '/access-cards'
+      fullPath: '/access-cards'
+      preLoaderRoute: typeof LayoutAccessCardsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutAccessCardsRoute: typeof LayoutAccessCardsRoute
   LayoutComputersRoute: typeof LayoutComputersRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
@@ -235,6 +255,7 @@ interface LayoutRouteChildren {
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
+  LayoutAccessCardsRoute: LayoutAccessCardsRoute,
   LayoutComputersRoute: LayoutComputersRoute,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,

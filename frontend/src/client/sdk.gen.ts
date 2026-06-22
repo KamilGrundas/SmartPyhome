@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ComputersReadComputersData, ComputersReadComputersResponse, ComputersCreateComputerData, ComputersCreateComputerResponse, ComputersReadComputerData, ComputersReadComputerResponse, ComputersUpdateComputerData, ComputersUpdateComputerResponse, ComputersDeleteComputerData, ComputersDeleteComputerResponse, ComputersWakeComputerData, ComputersWakeComputerResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { ComputersReadComputersData, ComputersReadComputersResponse, ComputersCreateComputerData, ComputersCreateComputerResponse, ComputersReadComputerData, ComputersReadComputerResponse, ComputersUpdateComputerData, ComputersUpdateComputerResponse, ComputersDeleteComputerData, ComputersDeleteComputerResponse, ComputersWakeComputerData, ComputersWakeComputerResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsHealthCheckResponse, AccessListCardsData, AccessListCardsResponse, AccessCreateCardData, AccessCreateCardResponse, AccessUpdateCardData, AccessUpdateCardResponse, AccessDeleteCardData, AccessDeleteCardResponse, AccessAddCardPointData, AccessAddCardPointResponse, AccessRemoveCardPointData, AccessRemoveCardPointResponse, AccessAddCardGroupData, AccessAddCardGroupResponse, AccessRemoveCardGroupData, AccessRemoveCardGroupResponse, AccessListGroupsData, AccessListGroupsResponse, AccessCreateGroupData, AccessCreateGroupResponse, AccessUpdateGroupData, AccessUpdateGroupResponse, AccessDeleteGroupData, AccessDeleteGroupResponse, AccessAddGroupPointData, AccessAddGroupPointResponse, AccessRemoveGroupPointData, AccessRemoveGroupPointResponse, AccessListPointsData, AccessListPointsResponse, AccessCreatePointData, AccessCreatePointResponse, AccessUpdatePointData, AccessUpdatePointResponse, AccessDeletePointData, AccessDeletePointResponse } from './types.gen';
 
 export class ComputersService {
     public static readComputers(data: ComputersReadComputersData = {}): CancelablePromise<ComputersReadComputersResponse> {
@@ -417,6 +417,185 @@ export class UtilsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/utils/health-check/'
+        });
+    }
+}
+
+export class AccessService {
+    // ── Cards ──────────────────────────────────────────────────────────────
+
+    public static listCards(data: AccessListCardsData = {}): CancelablePromise<AccessListCardsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/access/cards',
+            query: { skip: data.skip, limit: data.limit },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static createCard(data: AccessCreateCardData): CancelablePromise<AccessCreateCardResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/access/cards',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static updateCard(data: AccessUpdateCardData): CancelablePromise<AccessUpdateCardResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/access/cards/{card_id}',
+            path: { card_id: data.cardId },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static deleteCard(data: AccessDeleteCardData): CancelablePromise<AccessDeleteCardResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/access/cards/{card_id}',
+            path: { card_id: data.cardId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static addCardPoint(data: AccessAddCardPointData): CancelablePromise<AccessAddCardPointResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/access/cards/{card_id}/points/{point_id}',
+            path: { card_id: data.cardId, point_id: data.pointId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static removeCardPoint(data: AccessRemoveCardPointData): CancelablePromise<AccessRemoveCardPointResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/access/cards/{card_id}/points/{point_id}',
+            path: { card_id: data.cardId, point_id: data.pointId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static addCardGroup(data: AccessAddCardGroupData): CancelablePromise<AccessAddCardGroupResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/access/cards/{card_id}/groups/{group_id}',
+            path: { card_id: data.cardId, group_id: data.groupId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static removeCardGroup(data: AccessRemoveCardGroupData): CancelablePromise<AccessRemoveCardGroupResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/access/cards/{card_id}/groups/{group_id}',
+            path: { card_id: data.cardId, group_id: data.groupId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    // ── Groups ─────────────────────────────────────────────────────────────
+
+    public static listGroups(data: AccessListGroupsData = {}): CancelablePromise<AccessListGroupsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/access/groups',
+            query: { skip: data.skip, limit: data.limit },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static createGroup(data: AccessCreateGroupData): CancelablePromise<AccessCreateGroupResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/access/groups',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static updateGroup(data: AccessUpdateGroupData): CancelablePromise<AccessUpdateGroupResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/access/groups/{group_id}',
+            path: { group_id: data.groupId },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static deleteGroup(data: AccessDeleteGroupData): CancelablePromise<AccessDeleteGroupResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/access/groups/{group_id}',
+            path: { group_id: data.groupId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static addGroupPoint(data: AccessAddGroupPointData): CancelablePromise<AccessAddGroupPointResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/access/groups/{group_id}/points/{point_id}',
+            path: { group_id: data.groupId, point_id: data.pointId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static removeGroupPoint(data: AccessRemoveGroupPointData): CancelablePromise<AccessRemoveGroupPointResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/access/groups/{group_id}/points/{point_id}',
+            path: { group_id: data.groupId, point_id: data.pointId },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    // ── Access Points ──────────────────────────────────────────────────────
+
+    public static listPoints(data: AccessListPointsData = {}): CancelablePromise<AccessListPointsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/access/points',
+            query: { skip: data.skip, limit: data.limit },
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static createPoint(data: AccessCreatePointData): CancelablePromise<AccessCreatePointResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/access/points',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static updatePoint(data: AccessUpdatePointData): CancelablePromise<AccessUpdatePointResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/access/points/{point_id}',
+            path: { point_id: data.pointId },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: { 422: 'Validation Error' }
+        });
+    }
+
+    public static deletePoint(data: AccessDeletePointData): CancelablePromise<AccessDeletePointResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/access/points/{point_id}',
+            path: { point_id: data.pointId },
+            errors: { 422: 'Validation Error' }
         });
     }
 }
