@@ -3,14 +3,17 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
+  CheckCircle,
   CreditCard,
   EllipsisVertical,
   Layers,
   MapPin,
   Pencil,
   Plus,
+  ScrollText,
   Settings2,
   Trash2,
+  XCircle,
 } from "lucide-react"
 import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -19,6 +22,7 @@ import { z } from "zod"
 import {
   type AccessCardPublic,
   type AccessGroupPublic,
+  type AccessLogPublic,
   type AccessPointPublic,
   AccessService,
   UsersService,
@@ -1335,6 +1339,93 @@ function LocationsTab() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// LOGS TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function getLogsQueryOptions() {
+  return {
+    queryFn: () => AccessService.listLogs({ skip: 0, limit: 200 }),
+    queryKey: ["access-logs"],
+  }
+}
+
+function LogsTableContent() {
+  const { data: logs } = useSuspenseQuery(getLogsQueryOptions())
+
+  const columns: ColumnDef<AccessLogPublic>[] = [
+    {
+      accessorKey: "timestamp",
+      header: "Time",
+      cell: ({ row }) => (
+        <span className="text-sm tabular-nums text-muted-foreground whitespace-nowrap">
+          {new Date(row.original.timestamp).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "label",
+      header: "Card",
+      cell: ({ row }) => (
+        <div className="flex flex-col">
+          <span className="font-medium">{row.original.label ?? "—"}</span>
+          <span className="font-mono text-xs text-muted-foreground">{row.original.uid}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "username",
+      header: "User",
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">{row.original.username ?? "—"}</span>
+      ),
+    },
+    {
+      accessorKey: "gate_name",
+      header: "Location",
+      cell: ({ row }) => <span className="text-sm">{row.original.gate_name}</span>,
+    },
+    {
+      accessorKey: "granted",
+      header: "Result",
+      cell: ({ row }) =>
+        row.original.granted ? (
+          <Badge variant="default" className="gap-1">
+            <CheckCircle className="h-3 w-3" />
+            Granted
+          </Badge>
+        ) : (
+          <Badge variant="destructive" className="gap-1">
+            <XCircle className="h-3 w-3" />
+            Denied
+          </Badge>
+        ),
+    },
+  ]
+
+  if (logs.data.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-12">
+        <div className="rounded-full bg-muted p-4 mb-4">
+          <ScrollText className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-semibold">No logs yet</h3>
+        <p className="text-muted-foreground">Access attempts will appear here</p>
+      </div>
+    )
+  }
+
+  return <DataTable columns={columns} data={logs.data} />
+}
+
+function LogsTab() {
+  return (
+    <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+      <LogsTableContent />
+    </Suspense>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // PAGE
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1344,7 +1435,7 @@ function AccessCards() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Access Cards</h1>
         <p className="text-muted-foreground">
-          Manage RFID cards, groups, and access locations
+          Manage RFID cards, groups, access locations and view access logs
         </p>
       </div>
       <Tabs defaultValue="cards">
@@ -1352,6 +1443,7 @@ function AccessCards() {
           <TabsTrigger value="cards">Cards</TabsTrigger>
           <TabsTrigger value="groups">Groups</TabsTrigger>
           <TabsTrigger value="locations">Locations</TabsTrigger>
+          <TabsTrigger value="logs">Logs</TabsTrigger>
         </TabsList>
         <TabsContent value="cards" className="mt-4">
           <CardsTab />
@@ -1361,6 +1453,9 @@ function AccessCards() {
         </TabsContent>
         <TabsContent value="locations" className="mt-4">
           <LocationsTab />
+        </TabsContent>
+        <TabsContent value="logs" className="mt-4">
+          <LogsTab />
         </TabsContent>
       </Tabs>
     </div>

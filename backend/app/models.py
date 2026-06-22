@@ -269,6 +269,34 @@ class AccessCardsPublic(SQLModel):
     count: int
 
 
+class AccessLog(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    timestamp: datetime = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    uid: str = Field(max_length=50)
+    label: str | None = Field(default=None, max_length=255)
+    user_id: uuid.UUID | None = Field(default=None, foreign_key="user.id", ondelete="SET NULL")
+    gate_name: str = Field(max_length=255)
+    granted: bool
+
+
+class AccessLogPublic(SQLModel):
+    id: uuid.UUID
+    timestamp: datetime
+    uid: str
+    label: str | None = None
+    username: str | None = None
+    gate_name: str
+    granted: bool
+
+
+class AccessLogsPublic(SQLModel):
+    data: list[AccessLogPublic]
+    count: int
+
+
 # Generic message
 class Message(SQLModel):
     message: str

@@ -21,6 +21,9 @@ from app.models import (
     AccessGroupPublic,
     AccessGroupsPublic,
     AccessGroupUpdate,
+    AccessLog,
+    AccessLogPublic,
+    AccessLogsPublic,
     AccessPoint,
     AccessPointCreate,
     AccessPointPublic,
@@ -30,6 +33,7 @@ from app.models import (
     CardGroup,
     GroupAccessPoint,
     Message,
+    User,
 )
 
 router = APIRouter(prefix="/access", tags=["access"])
@@ -107,6 +111,25 @@ class AccessCheckRequest(BaseModel):
 # ── ESP32 HMAC endpoint (public) ──────────────────────────────────────────────
 
 
+def _write_log(
+    session: Any,
+    *,
+    uid: str,
+    gate: str,
+    card: "AccessCard | None",
+    granted: bool,
+) -> None:
+    log = AccessLog(
+        uid=uid,
+        label=card.label if card else None,
+        user_id=card.user_id if card else None,
+        gate_name=gate,
+        granted=granted,
+    )
+    session.add(log)
+    session.commit()
+
+
 @router.post("")
 def check_access(
     body: AccessCheckRequest,
@@ -123,16 +146,16 @@ def check_access(
 
     _verify_hmac(x_timestamp, uid, gate, x_signature)
 
-    # Look up the card
     card = session.exec(select(AccessCard).where(AccessCard.uid == uid)).first()
     if not card or not card.is_active:
+        _write_log(session, uid=uid, gate=gate, card=card, granted=False)
         raise HTTPException(status_code=403, detail="Access denied")
 
-    # Find the access point by name
     access_point = session.exec(
         select(AccessPoint).where(AccessPoint.name == gate)
     ).first()
     if not access_point:
+        _write_log(session, uid=uid, gate=gate, card=card, granted=False)
         raise HTTPException(status_code=403, detail="Access denied")
 
     # Check direct card → point assignment
@@ -143,6 +166,7 @@ def check_access(
         )
     ).first()
     if direct:
+        _write_log(session, uid=uid, gate=gate, card=card, granted=True)
         return {"granted": True}
 
     # Check via group: card → group → point
@@ -159,8 +183,10 @@ def check_access(
             )
         ).first()
         if group_point:
+            _write_log(session, uid=uid, gate=gate, card=card, granted=True)
             return {"granted": True}
 
+    _write_log(session, uid=uid, gate=gate, card=card, granted=False)
     raise HTTPException(status_code=403, detail="Access denied")
 
 
@@ -551,3 +577,47 @@ def remove_card_from_group(
         session.delete(link)
         session.commit()
     return _card_public(session, card)
+
+
+# ── Access Logs ───────────────────────────────────────────────────────────────
+
+
+@router.get("/logs", response_model=AccessLogsPublic)
+def list_access_logs(
+    session: SessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 200,
+) -> Any:
+    if not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="Not enough privileges")
+
+    count = session.exec(select(func.count()).select_from(AccessLog)).one()
+    logs = session.exec(
+        select(AccessLog)
+        .order_by(col(AccessLog.timestamp).desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
+
+    user_ids = {log.user_id for log in logs if log.user_id}
+    usernames: dict[uuid.UUID, str] = {}
+    if user_ids:
+        users = session.exec(select(User).where(col(User.id).in_(user_ids))).all()
+        usernames = {u.id: u.username for u in users}
+
+    return AccessLogsPublic(
+        data=[
+            AccessLogPublic(
+                id=log.id,
+                timestamp=log.timestamp,
+                uid=log.uid,
+                label=log.label,
+                username=usernames.get(log.user_id) if log.user_id else None,
+                gate_name=log.gate_name,
+                granted=log.granted,
+            )
+            for log in logs
+        ],
+        count=count,
+    )

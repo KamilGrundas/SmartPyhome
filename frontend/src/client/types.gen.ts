@@ -459,3 +459,25 @@ export type AccessDeletePointData = {
 };
 
 export type AccessDeletePointResponse = (Message);
+
+export type AccessLogPublic = {
+    id: string;
+    timestamp: string;
+    uid: string;
+    label?: string | null;
+    username?: string | null;
+    gate_name: string;
+    granted: boolean;
+};
+
+export type AccessLogsPublic = {
+    data: Array<AccessLogPublic>;
+    count: number;
+};
+
+export type AccessListLogsData = {
+    skip?: number;
+    limit?: number;
+};
+
+export type AccessListLogsResponse = AccessLogsPublic;
