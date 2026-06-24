@@ -72,7 +72,13 @@ import { handleError } from "@/utils"
 
 // ── Route ─────────────────────────────────────────────────────────────────────
 
+const tabValues = ["cards", "groups", "locations", "logs"] as const
+type TabValue = (typeof tabValues)[number]
+
 export const Route = createFileRoute("/_layout/access-cards")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: (tabValues.includes(search.tab as TabValue) ? search.tab : "cards") as TabValue,
+  }),
   component: AccessCards,
   beforeLoad: async () => {
     const user = await UsersService.readUserMe()
@@ -1346,6 +1352,8 @@ function getLogsQueryOptions() {
   return {
     queryFn: () => AccessService.listLogs({ skip: 0, limit: 200 }),
     queryKey: ["access-logs"],
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
   }
 }
 
@@ -1430,6 +1438,12 @@ function LogsTab() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function AccessCards() {
+  const { tab } = Route.useSearch()
+  const navigate = Route.useNavigate()
+
+  const setTab = (value: string) =>
+    navigate({ search: { tab: value as TabValue }, replace: true })
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -1438,7 +1452,7 @@ function AccessCards() {
           Manage RFID cards, groups, access locations and view access logs
         </p>
       </div>
-      <Tabs defaultValue="cards">
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="cards">Cards</TabsTrigger>
           <TabsTrigger value="groups">Groups</TabsTrigger>
